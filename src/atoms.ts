@@ -22,6 +22,29 @@ export interface Symbol {
     type: string;
 }
 
+export interface StockPrice {
+    c: number;    // current price
+    d: number;    // change
+    dp: number;   // percent change
+    h: number;    // high price of the day
+    l: number;    // low price of the day
+    o: number;    // open price of the day
+    pc: number;   // previous close price
+    t: number;    // timestamp
+}
+
+export interface NewsItem {
+    category: string;
+    datetime: number;
+    headline: string;
+    id: number;
+    image: string;
+    related: string;
+    source: string;
+    summary: string;
+    url: string;
+}
+
 const countriesAtom = atom<Country[]>([]);
 const symbolsAtom = atom<Symbol[]>([]);
 

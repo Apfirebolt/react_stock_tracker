@@ -4,18 +4,11 @@ import axiosInstance from "../plugins/interceptor";
 import { symbolsAtom } from "../atoms";
 import { Layout, Typography, Input, Card, Button, Modal } from "antd";
 import Loader from "../components/Loader";
-import type { Symbol } from "../atoms";
+import StockPrice from "../components/StockPrice";
+import type { Symbol, NewsItem } from "../atoms";
 
 const { Paragraph, Text, Title } = Typography;
 const { Content } = Layout;
-
-type StockDetails = {
-  c: number; // current price
-  pc: number; // previous close price
-  o: number; // open price
-  h: number; // high price
-  l: number; // low price
-};
 
 const Symbols: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("apple");
@@ -23,6 +16,8 @@ const Symbols: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [isNewsModalVisible, setIsNewsModalVisible] = useState(false);
+  const [newsData, setNewsData] = useState<NewsItem[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState<Symbol | null>(null);
   const [stockDetails, setStockDetails] = useState<StockDetails | null>(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
@@ -35,6 +30,29 @@ const Symbols: React.FC = () => {
     } catch (error) {
       console.error("Error fetching stock details:", error);
       setStockDetails(null);
+    } finally {
+      setDetailsLoading(false);
+    }
+  };
+
+  const fetchStockNews = async (symbol: string) => {
+    setDetailsLoading(true);
+    try {
+      const today = new Date();
+      const lastWeek = new Date();
+      lastWeek.setDate(today.getDate() - 7);
+
+      const from = lastWeek.toISOString().slice(0, 10);
+      const to = today.toISOString().slice(0, 10);
+
+      const response = await axiosInstance.get(
+        `/company-news?symbol=${symbol}&from=${from}&to=${to}`
+      );
+      setNewsData(response.data);
+      setIsNewsModalVisible(true);
+    } catch (error) {
+      console.error("Error fetching stock news:", error);
+      setNewsData([]);
     } finally {
       setDetailsLoading(false);
     }
@@ -71,6 +89,11 @@ const Symbols: React.FC = () => {
     setModalVisible(false);
     setSelectedSymbol(null);
     setStockDetails(null);
+  };
+
+  const handleFetchStockNews = (symbol: Symbol) => {
+    setSelectedSymbol(symbol);
+    fetchStockNews(symbol.symbol);
   };
 
   if (loading) {
@@ -130,6 +153,12 @@ const Symbols: React.FC = () => {
                 >
                   Show Details
                 </Button>
+                <Button
+                  onClick={() => handleFetchStockNews(symbol)}
+                  style={{ marginTop: "8px", marginLeft: "8px" }}
+                >
+                  Stock News
+                </Button>
               </Card>
             ))}
           </div>
@@ -142,25 +171,46 @@ const Symbols: React.FC = () => {
             {detailsLoading ? (
               <Loader />
             ) : stockDetails ? (
-              <div>
-                <Paragraph>
-                  <Text strong>Current Price:</Text> ${stockDetails.c}
-                </Paragraph>
-                <Paragraph>
-                  <Text strong>Previous Close:</Text> ${stockDetails.pc}
-                </Paragraph>
-                <Paragraph>
-                  <Text strong>Open:</Text> ${stockDetails.o}
-                </Paragraph>
-                <Paragraph>
-                  <Text strong>High:</Text> ${stockDetails.h}
-                </Paragraph>
-                <Paragraph>
-                  <Text strong>Low:</Text> ${stockDetails.l}
-                </Paragraph>
-              </div>
+              <StockPrice stockDetails={stockDetails} />
             ) : (
               <Paragraph>No details available.</Paragraph>
+            )}
+          </Modal>
+          <Modal
+            title={`${selectedSymbol?.displaySymbol} News`}
+            visible={isNewsModalVisible}
+            onCancel={() => setIsNewsModalVisible(false)}
+            footer={null}
+            width={800}
+          >
+            {detailsLoading ? (
+              <Loader />
+            ) : newsData.length > 0 ? (
+              newsData.map((news, index) => (
+                <Card
+                  key={index}
+                  title={news.headline}
+                  style={{ marginBottom: "16px" }}
+                >
+                  <Paragraph>{news.summary}</Paragraph>
+                  {news.image && (
+                    <img
+                      src={news.image}
+                      alt={news.headline}
+                      style={{
+                        width: "100%",
+                        borderRadius: "4px",
+                        marginBottom: "8px",
+                      }}
+                    />
+                  )}
+                  <a href={news.url} target="_blank" rel="noopener noreferrer">
+                    Read more
+                  </a>
+                </Card>
+              ))
+            ) : (
+              <Paragraph>No news available.</Paragraph>
             )}
           </Modal>
         </div>
