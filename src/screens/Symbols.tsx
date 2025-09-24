@@ -5,6 +5,8 @@ import { symbolsAtom } from "../atoms";
 import { Layout, Typography, Input, Card, Button, Modal } from "antd";
 import Loader from "../components/Loader";
 import StockPrice from "../components/StockPrice";
+import StockProfile from "../components/StockProfile";
+import StockNews from "../components/StockNews";
 import type { Symbol, NewsItem } from "../atoms";
 
 const { Paragraph, Text, Title } = Typography;
@@ -17,9 +19,11 @@ const Symbols: React.FC = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [isNewsModalVisible, setIsNewsModalVisible] = useState(false);
+  const [isStockProfileModalVisible, setIsStockProfileModalVisible] = useState(false);
   const [newsData, setNewsData] = useState<NewsItem[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState<Symbol | null>(null);
   const [stockDetails, setStockDetails] = useState<StockDetails | null>(null);
+  const [stockProfile, setStockProfile] = useState<any | null>(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
 
   const fetchStockDetails = async (symbol: string) => {
@@ -58,6 +62,42 @@ const Symbols: React.FC = () => {
     }
   };
 
+  const fetchStockProfile = async (symbol: string) => {
+    setDetailsLoading(true);
+    try {
+      const response = await axiosInstance.get(`/stock/profile2?symbol=${symbol}`);
+      setStockProfile(response.data);
+      setIsStockProfileModalVisible(true);
+    } catch (error) {
+      console.error("Error fetching stock profile:", error);
+      setStockProfile(null);
+    } finally {
+      setDetailsLoading(false);
+    }
+  }
+
+  const handleShowDetails = (symbol: Symbol) => {
+    setSelectedSymbol(symbol);
+    setModalVisible(true);
+    fetchStockDetails(symbol.symbol);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+    setSelectedSymbol(null);
+    setStockDetails(null);
+  };
+
+  const handleFetchStockNews = (symbol: Symbol) => {
+    setSelectedSymbol(symbol);
+    fetchStockNews(symbol.symbol);
+  };
+
+  const handleStockProfile = (symbol: Symbol) => {
+    setSelectedSymbol(symbol);
+    fetchStockProfile(symbol.symbol);
+  };
+
   useEffect(() => {
     const handler = setTimeout(() => {
       const fetchSymbols = async () => {
@@ -79,30 +119,13 @@ const Symbols: React.FC = () => {
     return () => clearTimeout(handler);
   }, [setSymbols, searchQuery]);
 
-  const handleShowDetails = (symbol: Symbol) => {
-    setSelectedSymbol(symbol);
-    setModalVisible(true);
-    fetchStockDetails(symbol.symbol);
-  };
-
-  const handleModalClose = () => {
-    setModalVisible(false);
-    setSelectedSymbol(null);
-    setStockDetails(null);
-  };
-
-  const handleFetchStockNews = (symbol: Symbol) => {
-    setSelectedSymbol(symbol);
-    fetchStockNews(symbol.symbol);
-  };
-
   if (loading) {
     return <Loader />;
   }
 
   return (
     <Layout>
-      <Content style={{ padding: "50px", marginTop: 64 }}>
+      <Content style={{ padding: "16px", marginTop: 32 }}>
         <div
           className="site-layout-content"
           style={{ background: "#fff", padding: 24, minHeight: 380 }}
@@ -159,6 +182,12 @@ const Symbols: React.FC = () => {
                 >
                   Stock News
                 </Button>
+                <Button
+                  onClick={() => handleStockProfile(symbol)}
+                  style={{ marginTop: "8px", marginLeft: "8px" }}
+                >
+                  Stock Profile
+                </Button>
               </Card>
             ))}
           </div>
@@ -187,30 +216,25 @@ const Symbols: React.FC = () => {
               <Loader />
             ) : newsData.length > 0 ? (
               newsData.map((news, index) => (
-                <Card
-                  key={index}
-                  title={news.headline}
-                  style={{ marginBottom: "16px" }}
-                >
-                  <Paragraph>{news.summary}</Paragraph>
-                  {news.image && (
-                    <img
-                      src={news.image}
-                      alt={news.headline}
-                      style={{
-                        width: "100%",
-                        borderRadius: "4px",
-                        marginBottom: "8px",
-                      }}
-                    />
-                  )}
-                  <a href={news.url} target="_blank" rel="noopener noreferrer">
-                    Read more
-                  </a>
-                </Card>
+                <StockNews key={index} stockNews={news} />
               ))
             ) : (
               <Paragraph>No news available.</Paragraph>
+            )}
+          </Modal>
+          <Modal
+            title={`${selectedSymbol?.displaySymbol} Profile`}
+            visible={isStockProfileModalVisible}
+            onCancel={() => setIsStockProfileModalVisible(false)}
+            footer={null}
+            width={600}
+          >
+            {detailsLoading ? (
+              <Loader />
+            ) : stockProfile ? (
+              <StockProfile stockProfile={stockProfile} />
+            ) : (
+              <Paragraph>No profile available.</Paragraph>
             )}
           </Modal>
         </div>

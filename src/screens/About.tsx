@@ -8,7 +8,7 @@ const About: React.FC = () => {
 
   return (
     <Layout>
-      <Content style={{ padding: "50px", marginTop: 64 }}>
+      <Content style={{ padding: "16px", marginTop: 32 }}>
         <div
           className="site-layout-content"
           style={{ background: "#fff", padding: 24, minHeight: 380 }}

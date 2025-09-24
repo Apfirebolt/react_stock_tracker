@@ -15,21 +15,51 @@ const StockPrice: React.FC<{ stockDetails: StockDetails }> = (props) => {
   const { stockDetails } = props;
 
   return (
-    <div>
+    <div
+      style={{
+        background: "#f0f2f5",
+        padding: "24px",
+        borderRadius: "12px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        maxWidth: "350px",
+        margin: "0 auto",
+      }}
+    >
+      <Typography.Title
+        level={4}
+        style={{ marginBottom: 16, textAlign: "center" }}
+      >
+        Stock Details
+      </Typography.Title>
       <Paragraph>
-        <Text strong>Current Price:</Text> ${stockDetails.c}
+        <Text strong style={{ color: "#1890ff" }}>
+          Current Price:
+        </Text>{" "}
+        <Text style={{ fontWeight: 600, fontSize: 18 }}>${stockDetails.c}</Text>
       </Paragraph>
       <Paragraph>
-        <Text strong>Previous Close:</Text> ${stockDetails.pc}
+        <Text strong style={{ color: "#52c41a" }}>
+          Previous Close:
+        </Text>{" "}
+        <Text>${stockDetails.pc}</Text>
       </Paragraph>
       <Paragraph>
-        <Text strong>Open:</Text> ${stockDetails.o}
+        <Text strong style={{ color: "#faad14" }}>
+          Open:
+        </Text>{" "}
+        <Text>${stockDetails.o}</Text>
       </Paragraph>
       <Paragraph>
-        <Text strong>High:</Text> ${stockDetails.h}
+        <Text strong style={{ color: "#f5222d" }}>
+          High:
+        </Text>{" "}
+        <Text>${stockDetails.h}</Text>
       </Paragraph>
       <Paragraph>
-        <Text strong>Low:</Text> ${stockDetails.l}
+        <Text strong style={{ color: "#722ed1" }}>
+          Low:
+        </Text>{" "}
+        <Text>${stockDetails.l}</Text>
       </Paragraph>
     </div>
   );
