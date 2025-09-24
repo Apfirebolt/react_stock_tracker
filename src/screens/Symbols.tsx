@@ -7,7 +7,8 @@ import Loader from "../components/Loader";
 import StockPrice from "../components/StockPrice";
 import StockProfile from "../components/StockProfile";
 import StockNews from "../components/StockNews";
-import type { Symbol, NewsItem } from "../atoms";
+import StockRecommendation from "../components/StockRecommendation";
+import type { Symbol, NewsItem, Recommendation } from "../atoms";
 
 const { Paragraph, Text, Title } = Typography;
 const { Content } = Layout;
@@ -19,8 +20,10 @@ const Symbols: React.FC = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [isNewsModalVisible, setIsNewsModalVisible] = useState(false);
+  const [isRecommendationsModalVisible, setIsRecommendationsModalVisible] = useState(false);
   const [isStockProfileModalVisible, setIsStockProfileModalVisible] = useState(false);
   const [newsData, setNewsData] = useState<NewsItem[]>([]);
+  const [recommendationsData, setRecommendationsData] = useState<Recommendation[]>([]);
   const [selectedSymbol, setSelectedSymbol] = useState<Symbol | null>(null);
   const [stockDetails, setStockDetails] = useState<StockDetails | null>(null);
   const [stockProfile, setStockProfile] = useState<any | null>(null);
@@ -76,6 +79,20 @@ const Symbols: React.FC = () => {
     }
   }
 
+  const fetchStockRecommendations = async (symbol: string) => {
+    setDetailsLoading(true);
+    try {
+      const response = await axiosInstance.get(`/stock/recommendation?symbol=${symbol}`);
+      setRecommendationsData(response.data);
+      setIsRecommendationsModalVisible(true);
+    } catch (error) {
+      console.error("Error fetching stock recommendations:", error);
+      setRecommendationsData([]);
+    } finally {
+      setDetailsLoading(false);
+    }
+  }
+
   const handleShowDetails = (symbol: Symbol) => {
     setSelectedSymbol(symbol);
     setModalVisible(true);
@@ -96,6 +113,11 @@ const Symbols: React.FC = () => {
   const handleStockProfile = (symbol: Symbol) => {
     setSelectedSymbol(symbol);
     fetchStockProfile(symbol.symbol);
+  };
+
+  const handleStockRecommendations = (symbol: Symbol) => {
+    setSelectedSymbol(symbol);
+    fetchStockRecommendations(symbol.symbol);
   };
 
   useEffect(() => {
@@ -163,11 +185,20 @@ const Symbols: React.FC = () => {
                 style={{
                   border: "1px solid #ccc",
                   borderRadius: "8px",
-                  padding: "16px",
                   textAlign: "center",
                 }}
               >
-                <Title level={3}>{symbol.displaySymbol}</Title>
+                <Title
+                  level={3}
+                  style={{
+                    backgroundColor: "#f0f2f5",
+                    textAlign: "center",
+                    padding: "8px",
+                    borderRadius: "4px",
+                  }}
+                >
+                  {symbol.displaySymbol}
+                </Title>
                 <Paragraph>{symbol.description}</Paragraph>
                 <Button
                   type="primary"
@@ -187,6 +218,12 @@ const Symbols: React.FC = () => {
                   style={{ marginTop: "8px", marginLeft: "8px" }}
                 >
                   Stock Profile
+                </Button>
+                <Button
+                  onClick={() => handleStockRecommendations(symbol)}
+                  style={{ marginTop: "8px", marginLeft: "8px" }}
+                >
+                  Recommendations
                 </Button>
               </Card>
             ))}
@@ -235,6 +272,23 @@ const Symbols: React.FC = () => {
               <StockProfile stockProfile={stockProfile} />
             ) : (
               <Paragraph>No profile available.</Paragraph>
+            )}
+          </Modal>
+          <Modal
+            title={`${selectedSymbol?.displaySymbol} Recommendations`}
+            visible={isRecommendationsModalVisible}
+            onCancel={() => setIsRecommendationsModalVisible(false)}
+            footer={null}
+            width={800}
+          >
+            {detailsLoading ? (
+              <Loader />
+            ) : recommendationsData.length > 0 ? (
+              recommendationsData.map((rec, index) => (
+                <StockRecommendation key={index} recommendation={rec} />
+              ))
+            ) : (
+              <Paragraph>No recommendations available.</Paragraph>
             )}
           </Modal>
         </div>
