@@ -9,6 +9,8 @@ const menuItems = [
   { key: "2", label: "Countries", path: "/countries" },
   { key: "3", label: "Symbols", path: "/symbols" },
   { key: "4", label: "About", path: "/about" },
+  { key: "5", label: "Login", path: "/login" },
+  { key: "6", label: "Register", path: "/register" }
 ];
 
 const AppHeader: React.FC = () => {
@@ -18,7 +20,8 @@ const AppHeader: React.FC = () => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#670D2F", // New background color
+        backgroundColor: "#006A67", // New background color
+        padding: "1.5rem 2rem",
       }}
     >
       <Menu
@@ -27,7 +30,7 @@ const AppHeader: React.FC = () => {
         defaultSelectedKeys={["1"]}
         style={{
           flex: 1,
-          backgroundColor: "#670D2F", // Match header background
+          backgroundColor: "#006A67", // Match header background
           color: "white", // Text color
         }}
       >

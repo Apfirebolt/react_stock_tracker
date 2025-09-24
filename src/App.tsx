@@ -5,6 +5,8 @@ import Home from './screens/Home';
 import About from './screens/About';
 import Countries from './screens/Countries';
 import Symbols from './screens/Symbols';
+import Login from './screens/Login';
+import Register from './screens/Register';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -16,6 +18,8 @@ const App: React.FC = () => {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/about" element={<About />} />
           <Route path="/countries" element={<Countries />} />
           <Route path="/symbols" element={<Symbols />} />
