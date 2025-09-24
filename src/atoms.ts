@@ -15,6 +15,14 @@ export interface Country {
     subRegion: string;
 }
 
-const countriesAtom = atom<Country[]>([]);
+export interface Symbol {
+    description: string;
+    displaySymbol: string;
+    symbol: string;
+    type: string;
+}
 
-export { countriesAtom };
+const countriesAtom = atom<Country[]>([]);
+const symbolsAtom = atom<Symbol[]>([]);
+
+export { countriesAtom, symbolsAtom };
