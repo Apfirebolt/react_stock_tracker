@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useAtom } from "jotai";
 import axiosInstance from "../plugins/interceptor";
 import { symbolsAtom } from "../atoms";
@@ -20,10 +20,14 @@ const Symbols: React.FC = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [isNewsModalVisible, setIsNewsModalVisible] = useState(false);
-  const [isRecommendationsModalVisible, setIsRecommendationsModalVisible] = useState(false);
-  const [isStockProfileModalVisible, setIsStockProfileModalVisible] = useState(false);
+  const [isRecommendationsModalVisible, setIsRecommendationsModalVisible] =
+    useState(false);
+  const [isStockProfileModalVisible, setIsStockProfileModalVisible] =
+    useState(false);
   const [newsData, setNewsData] = useState<NewsItem[]>([]);
-  const [recommendationsData, setRecommendationsData] = useState<Recommendation[]>([]);
+  const [recommendationsData, setRecommendationsData] = useState<
+    Recommendation[]
+  >([]);
   const [selectedSymbol, setSelectedSymbol] = useState<Symbol | null>(null);
   const [stockDetails, setStockDetails] = useState<StockDetails | null>(null);
   const [stockProfile, setStockProfile] = useState<any | null>(null);
@@ -42,7 +46,7 @@ const Symbols: React.FC = () => {
     }
   };
 
-  const fetchStockNews = async (symbol: string) => {
+  const fetchStockNews = useCallback(async (symbol: string) => {
     setDetailsLoading(true);
     try {
       const today = new Date();
@@ -63,12 +67,14 @@ const Symbols: React.FC = () => {
     } finally {
       setDetailsLoading(false);
     }
-  };
+  }, []);
 
-  const fetchStockProfile = async (symbol: string) => {
+  const fetchStockProfile = useCallback(async (symbol: string) => {
     setDetailsLoading(true);
     try {
-      const response = await axiosInstance.get(`/stock/profile2?symbol=${symbol}`);
+      const response = await axiosInstance.get(
+        `/stock/profile2?symbol=${symbol}`
+      );
       setStockProfile(response.data);
       setIsStockProfileModalVisible(true);
     } catch (error) {
@@ -77,12 +83,14 @@ const Symbols: React.FC = () => {
     } finally {
       setDetailsLoading(false);
     }
-  }
+  }, []);
 
-  const fetchStockRecommendations = async (symbol: string) => {
+  const fetchStockRecommendations = useCallback(async (symbol: string) => {
     setDetailsLoading(true);
     try {
-      const response = await axiosInstance.get(`/stock/recommendation?symbol=${symbol}`);
+      const response = await axiosInstance.get(
+        `/stock/recommendation?symbol=${symbol}`
+      );
       setRecommendationsData(response.data);
       setIsRecommendationsModalVisible(true);
     } catch (error) {
@@ -91,7 +99,7 @@ const Symbols: React.FC = () => {
     } finally {
       setDetailsLoading(false);
     }
-  }
+  }, []);
 
   const handleShowDetails = (symbol: Symbol) => {
     setSelectedSymbol(symbol);
@@ -156,20 +164,22 @@ const Symbols: React.FC = () => {
             Welcome to the Symbols page! Here you can find information about
             various stock symbols, including their name, exchange, and more.
           </Paragraph>
-          <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search for a symbol..."
-            style={{
-              width: "300px",
-              padding: "8px",
-              fontSize: "16px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-            }}
-          />
-          <div style={{ marginTop: "16px", fontStyle: "italic" }}>
-            <Text type="secondary">{symbols.length} symbols found.</Text>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for a symbol..."
+              style={{
+                width: "300px",
+                padding: "8px",
+                fontSize: "16px",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
+            />
+            <Text type="secondary" style={{ fontStyle: "italic" }}>
+              {symbols.length} symbols found.
+            </Text>
           </div>
           <div
             style={{
@@ -184,6 +194,7 @@ const Symbols: React.FC = () => {
                 key={symbol.symbol}
                 style={{
                   border: "1px solid #ccc",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)",
                   borderRadius: "8px",
                   textAlign: "center",
                 }}

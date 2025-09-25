@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Typography, Card, Layout, message } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -31,7 +32,17 @@ const Login: React.FC = () => {
         }}
       >
         <Card style={{ width: 400, padding: 24 }}>
-          <Title level={2} style={{ textAlign: "center" }}>
+          <Title
+            level={2}
+            style={{
+              textAlign: "center",
+              background: "#f0f2f5",
+              padding: "16px 0",
+              borderRadius: "8px",
+              marginBottom: "24px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
             Login
           </Title>
           <Form
@@ -48,7 +59,7 @@ const Login: React.FC = () => {
                 { type: "email", message: "Please enter a valid email!" },
               ]}
             >
-              <Input placeholder="Email" />
+              <Input placeholder="Email" prefix={<UserOutlined />} />
             </Form.Item>
             <Form.Item
               label="Password"
@@ -58,12 +69,18 @@ const Login: React.FC = () => {
                 { min: 6, message: "Password must be at least 6 characters." },
               ]}
             >
-              <Input.Password placeholder="Password" />
+              <Input.Password
+                placeholder="Password"
+                prefix={<LockOutlined />}
+              />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" block loading={loading}>
                 Login
               </Button>
+              <div style={{ textAlign: "center", marginTop: "16px" }}>
+                Don't have an account? <a href="/register">Register</a>
+              </div>
             </Form.Item>
           </Form>
         </Card>

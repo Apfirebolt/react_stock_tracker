@@ -1,18 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Layout } from "antd";
 
 const { Content } = Layout;
 
 const Home: React.FC = () => {
-
-  useEffect(() => {
-    // read env variable VITE_API_URL and VITE_API_KEY
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const apiKey = import.meta.env.VITE_API_KEY;
-
-    console.log("API URL:", apiUrl);
-    console.log("API KEY:", apiKey);
-  }, []);
 
   return (
     <Layout>

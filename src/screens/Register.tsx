@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Typography, Card, Layout, message } from "antd";
+import { UserOutlined, LockOutlined, RedEnvelopeOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -35,7 +36,17 @@ const Register: React.FC = () => {
         }}
       >
         <Card style={{ width: 400, padding: 24 }}>
-          <Title level={2} style={{ textAlign: "center" }}>
+          <Title
+            level={2}
+            style={{
+              textAlign: "center",
+              background: "#f0f2f5",
+              padding: "16px 0",
+              borderRadius: "8px",
+              marginBottom: "24px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+            }}
+          >
             Register
           </Title>
           <Form
@@ -52,7 +63,7 @@ const Register: React.FC = () => {
                 { min: 3, message: "Username must be at least 3 characters." },
               ]}
             >
-              <Input placeholder="Username" />
+              <Input placeholder="Username" prefix={<UserOutlined />} />
             </Form.Item>
             <Form.Item
               label="Email"
@@ -62,7 +73,7 @@ const Register: React.FC = () => {
                 { type: "email", message: "Please enter a valid email!" },
               ]}
             >
-              <Input placeholder="Email" />
+              <Input placeholder="Email" prefix={<RedEnvelopeOutlined />} />
             </Form.Item>
             <Form.Item
               label="Password"
@@ -72,12 +83,15 @@ const Register: React.FC = () => {
                 { min: 6, message: "Password must be at least 6 characters." },
               ]}
             >
-              <Input.Password placeholder="Password" />
+              <Input.Password placeholder="Password" prefix={<LockOutlined />} />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" block loading={loading}>
                 Register
               </Button>
+              <div style={{ textAlign: "center", marginTop: "16px" }}>
+                Already have an account? <a href="/login">Login</a>
+              </div>
             </Form.Item>
           </Form>
         </Card>

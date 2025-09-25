@@ -21,6 +21,14 @@ const About: React.FC = () => {
             their history, and much more.
           </Paragraph>
           <Title level={3}>Tech Stack</Title>
+          <Paragraph>
+            <ul>
+              <li><strong>React</strong> - UI library for building interactive interfaces</li>
+              <li><strong>Ant Design</strong> - Component library for elegant UI</li>
+              <li><strong>Jotai</strong> - State management solution</li>
+              <li><strong>TypeScript</strong> - Typed superset of JavaScript for safer code</li>
+            </ul>
+          </Paragraph>
         </div>
       </Content>
     </Layout>
