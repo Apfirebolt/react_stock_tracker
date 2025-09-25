@@ -2,7 +2,7 @@
 
 Welcome to the **React Stock Tracker** project! This application is built using modern web technologies like React, TypeScript, and Ant Design to provide an interactive and visually appealing experience for traders.
 
-This app uses the API https://finnhub.io to display dinosaur related info.
+This app uses the API https://finnhub.io to display stock related info.
 
 I wanted to experiment with this new library called Jotai for state management. I had a really good experience working with this library.
 
@@ -16,8 +16,12 @@ I wanted to experiment with this new library called Jotai for state management. 
 
 ## Screenshots
 
+Please find some of the screenshots of this app. It includes symbols and countries page.
+
 ![Screenshot 1](./screenshots/1.png)
 ![Screenshot 2](./screenshots/2.png)
+![Screenshot 3](./screenshots/3.png)
+
 
 ## Features
 
@@ -32,5 +36,4 @@ I wanted to experiment with this new library called Jotai for state management. 
 
 This project also features a **Stock Tracker** app, allowing users to view real-time stock prices, company information, and other relevant financial data. The app provides an intuitive interface for searching stocks, viewing detailed company profiles, and tracking price changes. It is designed to help users stay informed about market trends and make better investment decisions.
 
-
-## Updates 
+This app allows you to explore stocks listed in NYSE (New York Stock Exchange). You can see details of the stock, news related to stock and also stock recommendations coming from Finnhub API.

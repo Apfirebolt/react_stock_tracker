@@ -10,7 +10,8 @@ const menuItems = [
   { key: "3", label: "Symbols", path: "/symbols" },
   { key: "4", label: "About", path: "/about" },
   { key: "5", label: "Login", path: "/login" },
-  { key: "6", label: "Register", path: "/register" }
+  { key: "6", label: "Register", path: "/register" },
+  { key: "7", label: "Test", path: "/test" }
 ];
 
 const AppHeader: React.FC = () => {
