@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useAtom } from "jotai";
-import axiosInstance from "../plugins/interceptor";
+import { axiosInstance } from "../plugins/interceptor";
 import { symbolsAtom } from "../atoms";
 import { Layout, Typography, Input, Card, Button, Modal } from "antd";
 import Loader from "../components/Loader";

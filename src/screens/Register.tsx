@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Typography, Card, Layout, message } from "antd";
-import { UserOutlined, LockOutlined, RedEnvelopeOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LockOutlined,
+  RedEnvelopeOutlined,
+} from "@ant-design/icons";
+import { axiosBackend } from "../plugins/interceptor";
+import { authAtom } from "../store/auth";
+import { useAtom } from "jotai";
 
 const { Title } = Typography;
 const { Content } = Layout;
 
 const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const [authData, setAuthData] = useAtom(authAtom);
 
   const onFinish = async (values: {
     username: string;
@@ -16,8 +24,12 @@ const Register: React.FC = () => {
     setLoading(true);
     try {
       // Replace with your register API call
-      // await axiosInstance.post("/register", values);
-      message.success("Registration successful!");
+      const response = await axiosBackend.post("auth/register", values);
+      message.success({
+        content: "Registration successful!",
+        duration: 2,
+      });
+      setAuthData({ user: response.data, isAuthenticated: true });
     } catch (error) {
       message.error("Registration failed. Please try again.");
     } finally {
@@ -83,7 +95,10 @@ const Register: React.FC = () => {
                 { min: 6, message: "Password must be at least 6 characters." },
               ]}
             >
-              <Input.Password placeholder="Password" prefix={<LockOutlined />} />
+              <Input.Password
+                placeholder="Password"
+                prefix={<LockOutlined />}
+              />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" block loading={loading}>

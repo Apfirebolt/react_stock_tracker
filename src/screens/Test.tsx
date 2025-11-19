@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import axiosInstance from "../plugins/interceptor";
+import { axiosInstance } from "../plugins/interceptor";
 import { countriesAtom } from "../atoms";
+import { authAtom } from "../store/auth";
+import { useAtomValue } from "jotai";
 import { Layout } from "antd";
 import { Typography } from "antd";
 import Loader from "../components/Loader";
@@ -14,6 +16,7 @@ const { Content } = Layout;
 const Countries: React.FC = () => {
   const [countries, setCountries] = useAtom(countriesAtom);
   const [loading, setLoading] = useState(false);
+  const { user, isAuthenticated } = useAtomValue(authAtom);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -38,6 +41,11 @@ const Countries: React.FC = () => {
 
   return (
     <Layout>
+      {user && (
+        <div style={{ padding: "16px", background: "#f0f2f5", textAlign: "right" }}>
+          Welcome, {user.email}!
+        </div>
+      )}
       <Content style={{ padding: "16px", marginTop: 32 }}>
         <div
           className="site-layout-content"
