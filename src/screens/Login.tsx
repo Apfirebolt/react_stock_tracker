@@ -1,25 +1,34 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Typography, Card, Layout, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { axiosBackend } from "../plugins/interceptor";
+import { authAtom } from "../store/auth";
+import { useAtom } from "jotai";
 
 const { Title } = Typography;
 const { Content } = Layout;
 
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const [authData, setAuthData] = useAtom(authAtom);
 
   const onFinish = async (values: { email: string; password: string }) => {
     setLoading(true);
     try {
-      // Replace with your login API call
-      // await axiosInstance.post("/login", values);
-      message.success("Login successful!");
+      const response = await axiosBackend.post("auth/login", values);
+      message.success({
+        content: "Login successful!",
+        duration: 2,
+      });
+      setAuthData({ user: response.data, isAuthenticated: true });
     } catch (error) {
-      message.error("Login failed. Please check your credentials.");
+      message.error("Login failed. Please check your credentials.", error);
     } finally {
       setLoading(false);
     }
   };
+
+  console.log("Auth Data:", authData);
 
   return (
     <Layout>
